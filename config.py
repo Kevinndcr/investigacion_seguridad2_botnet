@@ -22,6 +22,7 @@ ALLOWED_COMMANDS = [
     'PING',      # Verificar conectividad
     'SYSINFO',   # Información del sistema
     'HTTP_TEST', # Prueba de carga HTTP
+    'CUSTOM',    # Comando personalizado del sistema
     'EXIT',      # Desconectar agente
 ]
 

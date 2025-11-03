@@ -61,7 +61,38 @@ python3 agent.py
 | 5 | Comando a todos | Enviar comando a todos los agentes |
 | 6 | Desconectar | Desconectar un agente |
 | 7 | Logs | Ver logs de actividad |
-| 8 | Salir | Cerrar servidor |
+| 8 | Comando personalizado | Ejecutar comando en un agente |
+| 9 | Comando personalizado (todos) | Ejecutar comando en todos |
+| 10 | Salir | Cerrar servidor |
+
+---
+
+## 💻 Ejemplos de Comandos Personalizados
+
+### Windows:
+```cmd
+dir                    # Listar archivos
+ipconfig              # Configuración de red
+whoami                # Usuario actual
+tasklist              # Procesos en ejecución
+systeminfo            # Info del sistema
+```
+
+### Linux/Ubuntu:
+```bash
+ls -la                # Listar archivos
+pwd                   # Directorio actual
+df -h                 # Espacio en disco
+ps aux                # Procesos
+uname -a              # Info del sistema
+```
+
+### Mac:
+```bash
+ls -la                # Listar archivos
+sw_vers               # Versión del SO
+top -l 1              # Procesos
+```
 
 ---
 

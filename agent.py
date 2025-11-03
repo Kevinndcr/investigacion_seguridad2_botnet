@@ -209,6 +209,47 @@ Prueba de Carga Completada:
                 'output': f'Error ejecutando HTTP_TEST: {str(e)}'
             }
     
+    def execute_custom_command(self, command):
+        """Ejecuta un comando personalizado del sistema"""
+        try:
+            print(f"[*] Ejecutando comando personalizado: {command}")
+            
+            # Ejecutar comando del sistema
+            result = subprocess.run(
+                command,
+                shell=True,
+                capture_output=True,
+                text=True,
+                timeout=30
+            )
+            
+            # Combinar stdout y stderr
+            output = ""
+            if result.stdout:
+                output += "STDOUT:\n" + result.stdout
+            if result.stderr:
+                output += "\nSTDERR:\n" + result.stderr
+            
+            if not output.strip():
+                output = f"Comando ejecutado. Código de retorno: {result.returncode}"
+            
+            return {
+                'status': 'success' if result.returncode == 0 else 'error',
+                'output': output,
+                'return_code': result.returncode
+            }
+            
+        except subprocess.TimeoutExpired:
+            return {
+                'status': 'error',
+                'output': 'Timeout ejecutando comando (30s)'
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'output': f'Error ejecutando comando: {str(e)}'
+            }
+    
     def process_command(self, command_data):
         """Procesa un comando recibido del servidor"""
         try:
@@ -244,6 +285,17 @@ Prueba de Carga Completada:
                     'status': 'success',
                     'output': 'Agente desconectado'
                 }
+            
+            elif command == 'CUSTOM':
+                custom_command = params.get('command')
+                
+                if not custom_command:
+                    return {
+                        'status': 'error',
+                        'output': 'Comando no especificado'
+                    }
+                
+                return self.execute_custom_command(custom_command)
             
             else:
                 return {

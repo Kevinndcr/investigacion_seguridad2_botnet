@@ -117,7 +117,9 @@ Una vez que el servidor esté ejecutándose, verás este menú:
  5. Enviar comando a TODOS los agentes
  6. Desconectar un agente
  7. Ver logs de actividad
- 8. Salir y cerrar servidor
+ 8. Ejecutar comando personalizado (un agente)
+ 9. Ejecutar comando personalizado (TODOS)
+ 10. Salir y cerrar servidor
 ==============================================================
 ```
 
@@ -152,6 +154,17 @@ Ejemplo de uso para el proyecto:
   - Crear un servidor web simple en otra instancia AWS
   - Usar HTTP_TEST para enviar múltiples peticiones
   - Monitorear con netdata el uso de recursos
+```
+
+### CUSTOM (Comando Personalizado)
+Ejecuta comandos del sistema operativo en el agente.
+```
+Uso: Opción 8 (un agente) u Opción 9 (todos)
+⚠️ ADVERTENCIA: Solo usar en entornos controlados
+Ejemplos:
+  - Windows: dir, ipconfig, whoami, tasklist
+  - Linux: ls -la, pwd, df -h, ps aux
+  - Mac: ls -la, sw_vers, top -l 1
 ```
 
 ### EXIT
