@@ -1,0 +1,64 @@
+Tienes que crear un sistema cliente-servidor de administración remota (tipo Remote Administration Tool o RAT) para entornos de práctica controlados, donde:
+
+El servidor corre en Ubuntu Server (AWS).
+
+Los clientes o agentes se ejecutan en otros equipos de prueba (pueden ser máquinas virtuales o PCs locales).
+
+La comunicación es segura y controlada (nada de acceso real a sistemas sin permiso).
+
+🧠 Estructura general del proyecto
+1. Servidor (en AWS Ubuntu Server)
+
+👉 Este es el programa principal que:
+
+Escucha conexiones entrantes de los agentes (clientes).
+
+Muestra un menú en consola para:
+
+Ver qué agentes están conectados.
+
+Enviar comandos o pruebas.
+
+Controlar pruebas de carga contra otro servidor.
+
+Guarda logs o métricas del sistema.
+
+📌 Herramientas sugeridas:
+
+Python con socket, threading o asyncio.
+
+Certificados SSL (para conexión segura, por ejemplo con ssl en Python).
+
+Netdata o htop para monitorear el uso de CPU, memoria y red.
+
+2. Agente (cliente en equipos de prueba)
+
+👉 Este programa:
+
+Se ejecuta en PCs o máquinas virtuales.
+
+Se conecta automáticamente al servidor (inversamente, como “reverse shell controlado”).
+
+Espera órdenes del servidor y ejecuta solo comandos preaprobados (nada peligroso).
+
+Ejemplo de funciones:
+
+Responder con el nombre del sistema operativo.
+
+Enviar ping al servidor de prueba.
+
+Participar en una “prueba de carga” simulada (enviar peticiones HTTP a un servidor web del estudiante).
+
+3. Envío de comandos preaprobados
+
+👉 Desde el servidor puedes ejecutar solo ciertos comandos definidos, por ejemplo:
+
+PING: comprobar conectividad.
+
+SYSINFO: obtener info del agente.
+
+HTTP_TEST: enviar N peticiones a una URL (prueba de carga).
+
+EXIT: desconectar.
+
+⚠️ Importante: No se deben ejecutar comandos arbitrarios del sistema operativo (por seguridad y ética). Solo los comandos aprobados por el profesor o definidos en el programa.

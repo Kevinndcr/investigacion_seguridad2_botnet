@@ -1,0 +1,37 @@
+Ingeniería en Tecnologías de Información Puntuación Total: 55 Pts.
+Docente: M.Sc. Roberto Escobar Agüero Valor Porcentual: 20%.
+Investigación Pts. Obt: ______________
+Seguridad de TI II Porcentaje Obt: _________
+Fecha de Exposición: 11/11/2025 Calificación Obt: _________
+
+INSTRUCCIONES GENERALES
+1. Lea cuidadosamente las instrucciones.
+2. Trabaje en parejas.
+
+I PARTE. Parte Práctica. Valor 35 Pts. Lea detenidamente las indicaciones y
+resuelva lo que se solicita a continuación.
+
+Los estudiantes deben desarrollar una investigación práctica sobre un sistema
+cliente-servidor de administración remota en un entorno controlado y con
+autorización. El servidor se ejecutará en Ubuntu Server sobre Amazon AWS y
+recibirá conexiones inversas desde múltiples agentes instalados en equipos de
+prueba. El enfoque está en gestionar muchas conexiones concurrentes de forma
+segura, enviar instrucciones preaprobadas y recopilar resultados. Los estudiantes
+deben de realizar pruebas con varios agentes conectados al mismo tiempo y
+demostrar el sistema funcionando en clase el día de la exposición. Para observar el
+comportamiento, pueden medir conexiones y uso de recursos con netdata o
+herramientas similares, únicamente contra servicios de práctica del curso y con
+consentimiento explícito.
+
+1. Los estudiantes deben de implementar el servidor con un menú de consola
+que administre todas las conexiones activas y permita solicitar pruebas de
+carga controladas contra un servicio web en ejecución en otro servidor de
+Amazon gestionado por el mismo estudiante, y registrar métricas del lado del
+objetivo. (20 pts)
+
+2. Los estudiantes deben de desarrollar el software del agente que, al
+ejecutarse en cada equipo de prueba, establezca una conexión segura al
+servidor, permanezca a la espera de instrucciones. (20 pts)
+
+3. Los estudiantes deben de habilitar en el servidor el envío de comandos
+preaprobados y seguros a todos los agentes. (15 pts)
