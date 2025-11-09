@@ -1,0 +1,142 @@
+# PASO A PASO: Instalación y Ejecución del Sistema RAT en ambos servidores
+
+---
+
+## 🖥️ 1. Servidor Controlador (AWS Ubuntu) - server.py
+
+### 1.1. Conectar por SSH
+```
+con putty xd
+```
+
+
+### 1.2. Clonar el repositorio desde GitHub
+```
+git clone https://github.com/Kevinndcr/investigacion_seguridad2_botnet.git
+cd investigacion_seguridad2_botnet
+```
+
+### 1.3. Dar permisos y ejecutar el instalador
+```
+chmod +x install_server.sh
+./install_server.sh
+```
+
+### 1.4. Ejecutar el servidor RAT
+```
+python3 server.py
+```
+
+---
+
+## 🖥️ 2. Servidor Víctima (AWS Ubuntu) - Servidor Web + netdata
+
+### 2.1. Conectar por SSH
+```
+con putty xd
+```
+
+
+### 2.2. Clonar el repositorio si necesitas test_server.py
+```
+git clone https://github.com/Kevinndcr/investigacion_seguridad2_botnet.git
+cd investigacion_seguridad2_botnet
+```
+
+### 2.3. Instalar servidor web (elige uno)
+
+#### Opción A: Python HTTP simple
+```
+python3 -m http.server 8000
+```
+
+#### Opción B: Nginx
+```
+sudo apt update
+sudo apt install nginx -y
+```
+
+### 2.4. Instalar netdata para monitoreo
+```
+sudo apt update
+sudo apt install netdata -y
+```
+
+### 2.5. Configurar netdata para acceso remoto
+```
+sudo nano /etc/netdata/netdata.conf
+# Buscar: bind to = localhost
+# Cambiar a: bind to = 0.0.0.0
+sudo systemctl restart netdata
+sudo ufw allow 19999
+```
+
+### 2.6. Verificar acceso a netdata
+```
+Abrir navegador: http://IP_PUBLICA_AWS_VICTIMA:19999
+```
+
+---
+
+## 🖥️ 3. Agentes (PCs/VMs de prueba)
+
+
+### 3.1. Clonar el repositorio y preparar dependencias (Linux)
+```
+git clone https://github.com/Kevinndcr/investigacion_seguridad2_botnet.git
+cd investigacion_seguridad2_botnet
+sudo apt update
+sudo apt install python3 python3-pip -y
+pip3 install requests psutil
+```
+
+### 3.2. Clonar el repositorio y preparar dependencias (Windows)
+```
+git clone https://github.com/Kevinndcr/investigacion_seguridad2_botnet.git
+cd investigacion_seguridad2_botnet
+pip install requests psutil
+```
+
+### 3.3. Ejecutar agente
+```
+python3 agent.py
+# o en Windows:
+python agent.py
+```
+
+### 3.4. Ingresar IP y puerto del servidor controlador
+```
+IP del servidor: [IP_PUBLICA_AWS_CONTROLADOR]
+Puerto: 4444
+```
+
+---
+
+## 🏁 4. Prueba de Carga y Monitoreo
+
+### 4.1. En el servidor controlador (server.py)
+```
+# Selecciona opción 4 (HTTP_TEST)
+# Ingresa 'all' para todos los agentes
+# Ingresa la URL del servidor víctima (ejemplo):
+http://IP_PUBLICA_AWS_VICTIMA:8000
+# Ingresa el número de peticiones (ejemplo: 500)
+```
+
+### 4.2. En el servidor víctima
+```
+# Observa el incremento de carga en netdata
+# Verifica los logs del servidor web si lo deseas
+```
+
+---
+
+## ✅ Checklist Final
+- [ ] Servidor controlador ejecutando server.py
+- [ ] Servidor víctima ejecutando servidor web y netdata
+- [ ] Agentes conectados y activos
+- [ ] Prueba de carga ejecutada y monitoreo en netdata
+
+---
+
+**¡Listo para la demostración!**
