@@ -102,12 +102,8 @@ pip install requests psutil
 python3 agent.py
 # o en Windows:
 python agent.py
-```
 
-### 3.4. Ingresar IP y puerto del servidor controlador
-```
-IP del servidor: [IP_PUBLICA_AWS_CONTROLADOR]
-Puerto: 4444
+# El agente se conectará automáticamente a 3.18.79.66:4444
 ```
 
 ---

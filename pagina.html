@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema RAT - Servidor de Prueba</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
+            color: #00ff00;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .content {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .title-main {
+            font-size: 6em;
+            font-weight: bold;
+            color: #00ff00;
+            text-shadow: 
+                0 0 10px #00ff00,
+                0 0 20px #00ff00,
+                0 0 40px #00ff00,
+                0 0 80px #00ff00;
+            margin-bottom: 30px;
+            letter-spacing: 8px;
+            animation: glowPulse 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glowPulse {
+            from { 
+                text-shadow: 
+                    0 0 10px #00ff00,
+                    0 0 20px #00ff00,
+                    0 0 40px #00ff00,
+                    0 0 60px #00ff00;
+            }
+            to { 
+                text-shadow: 
+                    0 0 20px #00ff00,
+                    0 0 30px #00ff00,
+                    0 0 60px #00ff00,
+                    0 0 100px #00ff00,
+                    0 0 140px #00ff00;
+            }
+        }
+        
+        .title-sub {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #00ff00;
+            text-shadow: 
+                0 0 10px #00ff00,
+                0 0 20px #00ff00;
+            margin-bottom: 60px;
+            letter-spacing: 5px;
+            opacity: 0.9;
+        }
+        
+        .divider {
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            margin: 50px auto;
+            box-shadow: 0 0 10px #00ff00;
+            animation: dividerGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes dividerGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .authors {
+            font-size: 2em;
+            color: #00ff00;
+            margin: 30px 0;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .author-name {
+            display: block;
+            margin: 20px 0;
+            font-weight: 300;
+            animation: fadeIn 1s ease-in;
+            transition: all 0.3s ease;
+        }
+        
+        .author-name:hover {
+            transform: scale(1.1);
+            text-shadow: 
+                0 0 20px #00ff00,
+                0 0 40px #00ff00;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .footer-info {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1em;
+            color: #00cc00;
+            opacity: 0.7;
+            letter-spacing: 2px;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            margin-top: 50px;
+            padding: 20px 50px;
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.1));
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            color: #00ff00;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+            cursor: pointer;
+        }
+        
+        .download-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.4), rgba(0, 255, 0, 0.2));
+            border-color: #00ff00;
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.6);
+            transform: scale(1.05);
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .download-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .blink {
+            animation: blink 1s linear infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="title-main">TRABAJO DE INVESTIGACIÓN</div>
+        <div class="title-sub">SEGURIDAD II</div>
+        
+        <div class="divider"></div>
+        
+        <div class="authors">
+            <span class="author-name">Kevin Córdoba Rivera</span>
+            <span class="author-name">Yohel Alonso Rojas González</span>
+        </div>
+        
+        <a href="/agent.exe" download class="download-btn">
+            ⬇️ Descargar Agente RAT
+        </a>
+    </div>
+    
+    <div class="footer-info">
+        IIIC 2025 | Sistema RAT
+    </div>
+    
+    <!-- Canvas para efectos visuales -->
+    <canvas id="matrix-canvas"></canvas>
+    <canvas id="particles-canvas"></canvas>
+    
+    <script>
+        // ============= EFECTO MATRIX BACKGROUND =============
+        const matrixCanvas = document.getElementById('matrix-canvas');
+        const matrixCtx = matrixCanvas.getContext('2d');
+        
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+        matrixCanvas.style.position = 'fixed';
+        matrixCanvas.style.top = '0';
+        matrixCanvas.style.left = '0';
+        matrixCanvas.style.zIndex = '-2';
+        matrixCanvas.style.opacity = '0.15';
+        
+        const matrixChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>?/~`';
+        const matrixColumns = matrixCanvas.width / 20;
+        const matrixDrops = [];
+        
+        for (let i = 0; i < matrixColumns; i++) {
+            matrixDrops[i] = Math.random() * matrixCanvas.height;
+        }
+        
+        function drawMatrix() {
+            matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            
+            matrixCtx.fillStyle = '#00ff00';
+            matrixCtx.font = '15px monospace';
+            
+            for (let i = 0; i < matrixDrops.length; i++) {
+                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                matrixCtx.fillText(text, i * 20, matrixDrops[i]);
+                
+                if (matrixDrops[i] > matrixCanvas.height && Math.random() > 0.975) {
+                    matrixDrops[i] = 0;
+                }
+                matrixDrops[i] += 20;
+            }
+        }
+        
+        setInterval(drawMatrix, 50);
+        
+        // ============= SISTEMA DE PARTÍCULAS =============
+        const particlesCanvas = document.getElementById('particles-canvas');
+        const particlesCtx = particlesCanvas.getContext('2d');
+        
+        particlesCanvas.width = window.innerWidth;
+        particlesCanvas.height = window.innerHeight;
+        particlesCanvas.style.position = 'fixed';
+        particlesCanvas.style.top = '0';
+        particlesCanvas.style.left = '0';
+        particlesCanvas.style.zIndex = '-1';
+        particlesCanvas.style.pointerEvents = 'none';
+        
+        const particles = [];
+        const particleCount = 100;
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * particlesCanvas.width;
+                this.y = Math.random() * particlesCanvas.height;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.radius = Math.random() * 2 + 1;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                if (this.x < 0 || this.x > particlesCanvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > particlesCanvas.height) this.vy *= -1;
+            }
+            
+            draw() {
+                particlesCtx.beginPath();
+                particlesCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                particlesCtx.fillStyle = `rgba(0, 255, 0, ${this.opacity})`;
+                particlesCtx.fill();
+            }
+        }
+        
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+        
+        function animateParticles() {
+            particlesCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+            
+            // Dibujar líneas entre partículas cercanas
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 150) {
+                        particlesCtx.beginPath();
+                        particlesCtx.strokeStyle = `rgba(0, 255, 0, ${0.2 * (1 - distance / 150)})`;
+                        particlesCtx.lineWidth = 1;
+                        particlesCtx.moveTo(particles[i].x, particles[i].y);
+                        particlesCtx.lineTo(particles[j].x, particles[j].y);
+                        particlesCtx.stroke();
+                    }
+                }
+            }
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            requestAnimationFrame(animateParticles);
+        }
+        
+        animateParticles();
+        
+        // ============= CONTADOR DE PETICIONES SIMULADO =============
+        let requestCount = 0;
+        let cpuUsage = 5;
+        let networkTraffic = 0;
+        
+        function updateStats() {
+            requestCount += Math.floor(Math.random() * 3);
+            cpuUsage = Math.min(95, cpuUsage + Math.random() * 2 - 1);
+            networkTraffic += Math.random() * 100;
+            
+            // Simular actividad (esto consume recursos)
+            const heavyArray = new Array(10000).fill(0).map((_, i) => Math.sqrt(i));
+            const sortedArray = heavyArray.sort((a, b) => b - a);
+        }
+        
+        setInterval(updateStats, 100);
+        
+        // ============= EFECTO DE CÓDIGO SCROLLING =============
+        const codeLines = [
+            'Initializing RAT connection...',
+            'Establishing secure channel...',
+            'Handshake complete.',
+            'Agent connected: 192.168.1.100',
+            'Sending SYSINFO command...',
+            'Response received: OK',
+            'CPU: Intel Core i7 | RAM: 16GB',
+            'HTTP_TEST initiated...',
+            'Requests: 500 | Target: Server',
+            'Attack vector: Distributed',
+            'Monitoring netdata metrics...',
+            'Network traffic spike detected',
+            'CPU usage: 75%',
+            'Connections: 250 active',
+            'Bandwidth: 50 MB/s',
+            'All systems operational.'
+        ];
+        
+        let codeIndex = 0;
+        const codeDisplay = document.createElement('div');
+        codeDisplay.style.position = 'fixed';
+        codeDisplay.style.bottom = '20px';
+        codeDisplay.style.right = '20px';
+        codeDisplay.style.background = 'rgba(0, 0, 0, 0.9)';
+        codeDisplay.style.border = '1px solid #00ff00';
+        codeDisplay.style.padding = '15px';
+        codeDisplay.style.fontFamily = 'monospace';
+        codeDisplay.style.fontSize = '12px';
+        codeDisplay.style.color = '#00ff00';
+        codeDisplay.style.maxWidth = '300px';
+        codeDisplay.style.maxHeight = '150px';
+        codeDisplay.style.overflow = 'hidden';
+        codeDisplay.style.borderRadius = '5px';
+        codeDisplay.style.boxShadow = '0 0 20px rgba(0, 255, 0, 0.3)';
+        document.body.appendChild(codeDisplay);
+        
+        function updateCodeDisplay() {
+            const line = codeLines[codeIndex % codeLines.length];
+            const timestamp = new Date().toLocaleTimeString();
+            codeDisplay.innerHTML += `<div>[${timestamp}] ${line}</div>`;
+            
+            // Mantener solo las últimas 5 líneas
+            const lines = codeDisplay.getElementsByTagName('div');
+            if (lines.length > 5) {
+                codeDisplay.removeChild(lines[0]);
+            }
+            
+            codeIndex++;
+        }
+        
+        setInterval(updateCodeDisplay, 2000);
+        
+        // ============= EFECTO GLITCH EN EL TÍTULO =============
+        const title = document.querySelector('h1');
+        const originalText = title.textContent;
+        
+        function glitchEffect() {
+            const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
+            let glitchedText = '';
+            
+            for (let i = 0; i < originalText.length; i++) {
+                if (Math.random() > 0.9) {
+                    glitchedText += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+                } else {
+                    glitchedText += originalText[i];
+                }
+            }
+            
+            title.textContent = glitchedText;
+            
+            setTimeout(() => {
+                title.textContent = originalText;
+            }, 50);
+        }
+        
+        setInterval(glitchEffect, 5000);
+        
+        // ============= CARGA PESADA ADICIONAL =============
+        // Cálculos intensivos para hacer la página más pesada
+        function heavyComputation() {
+            const data = [];
+            for (let i = 0; i < 50000; i++) {
+                data.push({
+                    id: i,
+                    value: Math.random() * 1000,
+                    hash: btoa(String(Math.random())),
+                    timestamp: Date.now()
+                });
+            }
+            
+            // Operaciones de array intensivas
+            const sorted = data.sort((a, b) => b.value - a.value);
+            const filtered = sorted.filter(item => item.value > 500);
+            const mapped = filtered.map(item => ({
+                ...item,
+                computed: Math.sqrt(item.value) * Math.PI
+            }));
+            
+            // JSON parsing intensivo
+            const jsonString = JSON.stringify(mapped);
+            const parsed = JSON.parse(jsonString);
+        }
+        
+        setInterval(heavyComputation, 500);
+        
+        // ============= ANIMACIONES CSS DINÁMICAS =============
+        function createFloatingElements() {
+            for (let i = 0; i < 20; i++) {
+                const element = document.createElement('div');
+                element.style.position = 'fixed';
+                element.style.width = Math.random() * 50 + 10 + 'px';
+                element.style.height = element.style.width;
+                element.style.border = '2px solid rgba(0, 255, 0, 0.3)';
+                element.style.borderRadius = '50%';
+                element.style.left = Math.random() * 100 + '%';
+                element.style.top = Math.random() * 100 + '%';
+                element.style.pointerEvents = 'none';
+                element.style.zIndex = '-1';
+                element.style.animation = `float ${Math.random() * 5 + 3}s infinite ease-in-out`;
+                document.body.appendChild(element);
+            }
+        }
+        
+        // Agregar animación float
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes float {
+                0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+                50% { transform: translateY(-30px) rotate(180deg); opacity: 0.6; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        createFloatingElements();
+        
+        // ============= ACTUALIZAR TIMESTAMP =============
+        setInterval(() => {
+            const now = new Date();
+            document.title = `Sistema RAT - ${now.toLocaleTimeString()} | Carga: ${cpuUsage.toFixed(1)}%`;
+        }, 1000);
+        
+        // ============= RESIZE HANDLERS =============
+        window.addEventListener('resize', () => {
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+            particlesCanvas.width = window.innerWidth;
+            particlesCanvas.height = window.innerHeight;
+        });
+        
+        // ============= DATOS ALEATORIOS PARA MAYOR PESO =============
+        const largeDataSet = new Array(100000).fill(0).map((_, i) => ({
+            index: i,
+            random: Math.random(),
+            timestamp: Date.now(),
+            hash: btoa(String(i * Math.random()))
+        }));
+        
+        console.log('Sistema RAT cargado. Datos inicializados:', largeDataSet.length, 'elementos');
+    </script>
+</body>
+</html>

